@@ -1,10 +1,11 @@
-import requests
-from datetime import datetime, timedelta
-import time
 import json
 import random
-import feedparser
+import time
 
+from datetime import datetime, timedelta
+
+import feedparser
+import requests
 # --- Configuration and Data ---
 
 # Target news websites and their RSS feed URLs
