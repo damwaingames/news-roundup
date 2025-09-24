@@ -31,11 +31,12 @@ CHARITY_NEWS_WEBSITES = [
     # "https://www.bbc.co.uk/news/topics/c9z6w63q5elt"
 ]
 
+
 async def crawl_all_news_sources():
-    print('Starting news crawl...')
+    print("Starting news crawl...")
 
     # Create data directory if it doesn't exist
-    data_dir = Path('data')
+    data_dir = Path("data")
     data_dir.mkdir(exist_ok=True)
 
     async with async_playwright() as p:
@@ -45,23 +46,24 @@ async def crawl_all_news_sources():
 
         try:
             for page_url in CHARITY_NEWS_WEBSITES:
-                print(f'🔍 Analyzing HTML from: {page_url}')
+                print(f"🔍 Analyzing HTML from: {page_url}")
 
                 try:
                     articles = await extract_articles_from_page(browser, page_url)
                     all_articles.extend(articles)
                 except Exception as error:
-                    print(f'❌ Failed to analyze {page_url}: {str(error)}')
+                    print(f"❌ Failed to analyze {page_url}: {str(error)}")
         finally:
             await browser.close()
 
     # Save results
-    output_path = data_dir / 'crawled-articles.json'
-    with open(output_path, 'w') as f:
+    output_path = data_dir / "crawled-articles.json"
+    with open(output_path, "w") as f:
         json.dump(all_articles, f, indent=2)
 
-    print(f'Crawl complete! Found {len(all_articles)} recent articles.')
-    print(f'Results saved to: {output_path}.')
+    print(f"Crawl complete! Found {len(all_articles)} recent articles.")
+    print(f"Results saved to: {output_path}.")
+
 
 async def extract_articles_from_page(browser, page_url):
     """
@@ -78,7 +80,7 @@ async def extract_articles_from_page(browser, page_url):
 
     try:
         # Navigate to the source page
-        await page.goto(page_url, wait_until='networkidle', timeout=30000)
+        await page.goto(page_url, wait_until="networkidle", timeout=30000)
 
         # Get the HTML content from the <main> section (fallback to body if no main)
         html_content = await page.evaluate("""
@@ -93,10 +95,11 @@ async def extract_articles_from_page(browser, page_url):
         # Use AI to extract recent articles from HTML
         return await analyze_html_for_recent_articles(html_content, page_url)
     except Exception as error:
-        print(f'❌ Failed to extract from {page_url}: {str(error)}')
+        print(f"❌ Failed to extract from {page_url}: {str(error)}")
         return []
     finally:
         await page.close()
+
 
 async def analyze_html_for_recent_articles(html_content, page_url):
     """
@@ -109,8 +112,8 @@ async def analyze_html_for_recent_articles(html_content, page_url):
     Returns:
         list: array of recent articles
     """
-    current_date = datetime.now().strftime('%Y-%m-%d')  # YYYY-MM-DD format
-    seven_days_ago = (datetime.now() - timedelta(days=7)).strftime('%Y-%m-%d')
+    current_date = datetime.now().strftime("%Y-%m-%d")  # YYYY-MM-DD format
+    seven_days_ago = (datetime.now() - timedelta(days=7)).strftime("%Y-%m-%d")
 
     system_prompt = f"""You are a charity sector news analyst. Analyze this HTML content to extract recent news articles.
 
@@ -151,18 +154,19 @@ Only include articles that are clearly from the last 7 days. If you can't determ
         )
         content = response.text()
         if not content:
-            print(f'⚠️ No response from AI for {page_url}')
+            print(f"⚠️ No response from AI for {page_url}")
             return []
 
         result = json.loads(content)
-        articles = result.get('articles', [])
+        articles = result.get("articles", [])
 
-        print(f'📰 Found {len(articles)} recent articles from {page_url}')
+        print(f"📰 Found {len(articles)} recent articles from {page_url}")
         return articles
 
     except Exception as error:
-        print(f'❌ AI analysis failed for {page_url}: {str(error)}')
+        print(f"❌ AI analysis failed for {page_url}: {str(error)}")
         return []
 
-if __name__ == '__main__':
+
+if __name__ == "__main__":
     asyncio.run(crawl_all_news_sources())
