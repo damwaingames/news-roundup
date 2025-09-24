@@ -26,9 +26,9 @@ model = llm.get_model(LLM_MODEL)
 # initial tests. Uncomment these sites to do a full run of the news audit.
 CHARITY_NEWS_WEBSITES = [
     "https://www.thirdsector.co.uk/news",
-    # "https://www.civilsociety.co.uk/",
-    # "https://www.charitytoday.co.uk/",
-    # "https://www.bbc.co.uk/news/topics/c9z6w63q5elt"
+    "https://www.civilsociety.co.uk/",
+    "https://www.charitytoday.co.uk/",
+    "https://www.bbc.co.uk/news/topics/c9z6w63q5elt"
 ]
 
 
