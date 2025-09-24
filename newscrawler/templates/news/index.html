@@ -1,1 +1,9 @@
 <h1>News</h1>
+
+{% for article in news_articles %}
+    <h2>{{ article.title }}</h2>
+    <p>{{ article.summary }}</p>
+    <p>{{ article.article_date }}</p>
+{% empty %}
+    <p>No news articles found</p>
+{% endfor %}
